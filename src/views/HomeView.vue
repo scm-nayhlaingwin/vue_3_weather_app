@@ -12,7 +12,6 @@
           focus:shadow-[0px_1px_0_0_#004E71]
         "
       >
-      {{ mapboxSearchResults ? 'hi' : 'hello' }}
       <ul 
         v-if="mapboxSearchResults"
         class="absolute bg-weather-secondary text-white w-full shadow-md py-2 px-1 top-[66px]"
@@ -29,7 +28,7 @@
             class="py-2 cursor-pointer"
             @click="previewCity(mapboxSearchResults)"
           >
-            {{ mapboxSearchResults.City_Town }}
+            {{ city(mapboxSearchResults) }}
           </li>
         </template>
       </ul>
@@ -39,13 +38,18 @@
 
 <script setup>
   import allData from '@/assets/allDataOfmm.json'
-  import { ref } from 'vue';
+  import { ref, computed } from 'vue';
   import { useRouter } from 'vue-router';
   const router = useRouter()
   const searchQuery = ref("")
   const mapboxSearchResults = ref(null)
   const searchError = ref(false)
 
+  const city = computed(() => {
+    return (data) => {
+      return data.City_Town == data.City ? `${data.City_Town}, ${data.Region}` : `${data.City_Town} ${data.City}, ${data.Region}`
+    }
+  })
   const getSearchResults  = () => {
     if (searchQuery.value !== '') {
       const result = allData.find( data => data.City_Town == searchQuery.value)
@@ -56,13 +60,13 @@
     mapboxSearchResults.value = null
   }
   const previewCity = (searchResult) => {
-    const[city,state] = searchResult.place_name.split(",")
+    const[city,state] = [searchResult.City_Town, searchResult.Region]
     router.push({
       name:'cityView',
-      params: {state: state.replaceAll(" ",""),city},
+      params: {state, city},
       query: {
-        lat: searchResult.geometry.coordinates[1],
-        lng: searchResult.geometry.coordinates[0],
+        lat: searchResult.Lattitude,
+        lng: searchResult.Longitude,
         preview: true
       }
     })

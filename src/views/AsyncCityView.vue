@@ -192,8 +192,6 @@
         return `${date} ${time}`
 
     })
-
-    console.log(weeklyWeatherData);
 </script>
 
 <style scoped>
