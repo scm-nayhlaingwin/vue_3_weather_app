@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .test {
+        @apply text-white p-4 bg-weather-secondary w-full text-center;
+    }
+}
+
+@layer base {
+    a {
+        display: block;
+    }
+}
+
