@@ -5,7 +5,7 @@
         type="text"
         v-model="searchQuery"
         @input="getSearchResults"
-        placeholder="Search for a city or state"
+        placeholder="Search for a city or state, Start with UpperCase"
         class="
           py-2 px-1 w-full bg-transparent border-b
           focus:border-weather-secondary focus:outline-none 
@@ -16,19 +16,17 @@
         v-if="mapboxSearchResults"
         class="absolute bg-weather-secondary text-white w-full shadow-md py-2 px-1 top-[66px]"
       >
-
         <p v-if="searchError">
-          Sorry, Something went wrong please try again!!
-        </p>
-        <p v-if="!searchError && mapboxSearchResults == null">
-          No result match your query, try a different term!!
+          Sorry, No result match your query, try a different term!!!!
         </p>
         <template v-else>  
           <li
+            v-for="data in mapboxSearchResults"
+            :key="data.id"
             class="py-2 cursor-pointer"
-            @click="previewCity(mapboxSearchResults)"
+            @click="previewCity(data)"
           >
-            {{ city(mapboxSearchResults) }}
+            {{ city(data) }}
           </li>
         </template>
       </ul>
@@ -52,9 +50,14 @@
   })
   const getSearchResults  = () => {
     if (searchQuery.value !== '') {
-      const result = allData.find( data => data.City_Town == searchQuery.value)
-      mapboxSearchResults.value = result == undefined ? null : result
-      searchError.value = result == undefined ? true : false
+      const result = allData.filter( data => {
+        if (
+          data.City_Town.includes(searchQuery.value) ||
+          data.Region.includes(searchQuery.value)
+        ) return data
+      })
+      mapboxSearchResults.value = (result == undefined) || (result.length < 1) ? [] : result
+      searchError.value = (result == undefined) || (result.length < 1) ? true : false
       return
     }
     mapboxSearchResults.value = null
