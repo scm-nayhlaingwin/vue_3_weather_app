@@ -12,24 +12,24 @@
           focus:shadow-[0px_1px_0_0_#004E71]
         "
       >
-      <ul 
+      <div 
         v-if="mapboxSearchResults"
-        class="absolute bg-weather-secondary text-white w-full shadow-md py-2 px-1 top-[66px]"
+        class="absolute bg-weather-secondary text-white w-full shadow-md py-2 px-1 top-[66px] custom-h"
       >
         <p v-if="searchError">
           Sorry, No result match your query, try a different term!!!!
         </p>
         <template v-else>  
-          <li
+          <div
             v-for="data in mapboxSearchResults"
             :key="data.id"
             class="py-2 cursor-pointer"
             @click="previewCity(data)"
           >
             {{ city(data) }}
-          </li>
+          </div>
         </template>
-      </ul>
+      </div>
     </div>
   </main>
 </template>
@@ -75,3 +75,27 @@
     })
   }
 </script>
+<style scoped>
+  .custom-h {
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+  
+.custom-h::-webkit-scrollbar-track
+{
+	border-radius: 10px;
+	background-color: #F5F5F5;
+}
+
+.custom-h::-webkit-scrollbar
+{
+	width: 7px;
+	background-color: #F5F5F5;
+}
+
+.custom-h::-webkit-scrollbar-thumb
+{
+	border-radius: 10px;
+	background-color: #5cdff3;
+}
+</style>
